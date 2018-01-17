@@ -172,13 +172,20 @@ deliveries.forEach(deliverie => {
       }
       else
       {
-        deliverie.price = trucker.pricePerKm * deliverie.distance + parseFloat((deliverie.volume * trucker.pricePerVolume * 0.9).toFixed(2));
+        deliverie.price = trucker.pricePerKm * deliverie.distance + parseFloat((deliverie.volume * trucker.pricePerVolume).toFixed(2));
       }
 
       var commission = parseFloat(deliverie.price * 0.3).toFixed(2);
       deliverie.commission.insurance = parseFloat(commission * 0.5).toFixed(2);
       deliverie.commission.treasury = parseInt(deliverie.distance / 500);
       deliverie.commission.convargo = parseFloat(commission * 0.5).toFixed(2) - deliverie.commission.treasury;
+
+      // The deductible
+      if(deliverie.options.deductibleReduction == true)
+      {
+        deliverie.price += deliverie.volume;
+      }
+
     }
   });
 });
