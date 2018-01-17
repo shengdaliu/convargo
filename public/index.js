@@ -152,7 +152,24 @@ deliveries.forEach(deliverie => {
   truckers.forEach(trucker => {
     if(deliverie.truckerId === trucker.id)
     {
-      deliverie.price = trucker.pricePerKm * deliverie.distance + deliverie.volume * trucker.pricePerVolume;
+      // Calculate the final price
+      //deliverie.price = trucker.pricePerKm * deliverie.distance + deliverie.volume * trucker.pricePerVolume;
+
+      // Calculate the final price with the "Decreasing pricing for high volumes" option
+      if(deliverie.volume >= 25)
+      {
+        // 50% reduction if volume >= 25m3
+        deliverie.price = trucker.pricePerKm * deliverie.distance + parseFloat((deliverie.volume * trucker.pricePerVolume * 0.5).toFixed(2));;
+      }
+      else if(deliverie.volume >= 10)
+      {
+        // 30%
+        deliverie.price = trucker.pricePerKm * deliverie.distance + parseFloat((deliverie.volume * trucker.pricePerVolume * 0.7).toFixed(2));;
+      }
+      else
+      {
+        deliverie.price = trucker.pricePerKm * deliverie.distance + parseFloat((deliverie.volume * trucker.pricePerVolume * 0.9).toFixed(2));;
+      }
     }
   });
 });
