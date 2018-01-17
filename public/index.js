@@ -159,17 +159,26 @@ deliveries.forEach(deliverie => {
       if(deliverie.volume >= 25)
       {
         // 50% reduction if volume >= 25m3
-        deliverie.price = trucker.pricePerKm * deliverie.distance + parseFloat((deliverie.volume * trucker.pricePerVolume * 0.5).toFixed(2));;
+        deliverie.price = trucker.pricePerKm * deliverie.distance + parseFloat((deliverie.volume * trucker.pricePerVolume * 0.5).toFixed(2));
       }
       else if(deliverie.volume >= 10)
       {
         // 30%
-        deliverie.price = trucker.pricePerKm * deliverie.distance + parseFloat((deliverie.volume * trucker.pricePerVolume * 0.7).toFixed(2));;
+        deliverie.price = trucker.pricePerKm * deliverie.distance + parseFloat((deliverie.volume * trucker.pricePerVolume * 0.7).toFixed(2));
+      }
+      else if(deliverie.volume >= 5)
+      {
+        deliverie.price = trucker.pricePerKm * deliverie.distance + parseFloat((deliverie.volume * trucker.pricePerVolume * 0.9).toFixed(2));
       }
       else
       {
-        deliverie.price = trucker.pricePerKm * deliverie.distance + parseFloat((deliverie.volume * trucker.pricePerVolume * 0.9).toFixed(2));;
+        deliverie.price = trucker.pricePerKm * deliverie.distance + parseFloat((deliverie.volume * trucker.pricePerVolume * 0.9).toFixed(2));
       }
+
+      var commission = parseFloat(deliverie.price * 0.3).toFixed(2);
+      deliverie.commission.insurance = parseFloat(commission * 0.5).toFixed(2);
+      deliverie.commission.treasury = parseInt(deliverie.distance / 500);
+      deliverie.commission.convargo = parseFloat(commission * 0.5).toFixed(2) - deliverie.commission.treasury;
     }
   });
 });
