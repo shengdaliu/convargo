@@ -174,18 +174,48 @@ deliveries.forEach(deliverie => {
       {
         deliverie.price = trucker.pricePerKm * deliverie.distance + parseFloat((deliverie.volume * trucker.pricePerVolume).toFixed(2));
       }
+    }
+  });
 
-      var commission = parseFloat(deliverie.price * 0.3).toFixed(2);
-      deliverie.commission.insurance = parseFloat(commission * 0.5).toFixed(2);
-      deliverie.commission.treasury = parseInt(deliverie.distance / 500);
-      deliverie.commission.convargo = parseFloat(commission * 0.5).toFixed(2) - deliverie.commission.treasury;
+  var commission = parseFloat(deliverie.price * 0.3).toFixed(2);
+  deliverie.commission.insurance = parseFloat((commission * 0.5).toFixed(2));
+  deliverie.commission.treasury = parseInt(deliverie.distance / 500);
+  deliverie.commission.convargo = parseFloat(commission * 0.5).toFixed(2) - deliverie.commission.treasury;
 
-      // The deductible
-      if(deliverie.options.deductibleReduction == true)
-      {
-        deliverie.price += deliverie.volume;
-      }
+  var optionPrice = 0;
 
+  // The deductible
+  if(deliverie.options.deductibleReduction == true)
+  {
+    deliverie.price += deliverie.volume;
+    optionPrice = deliverie.volume;
+  }
+
+  // Paiements for actors 
+  actors.forEach(actor => {
+    if(actor.deliveryId == deliverie.id)
+    {
+      actor.forEach(paiement => {
+        if (paiement.who == "shipper") {
+          paiement.amount = deliverie.price;
+        }
+        else if(paiement.who == "owner")
+        {
+          paiement.amount = deliverie.price - parseFloat(deliverie.price * 0.3).toFixed(2);
+        }
+        else if(paiement.who == "insurance")
+        {
+          paiement.amount = deliverie.commission.insurance;
+        }
+        else if(paiement.who == "treasury")
+        {
+          paiement.amount = deliverie.commission.treasury;
+        }
+        else if(paiement.who == "convargo")
+        {
+          paiement.amount= deliverie.commission.convargo + optionPrice;
+        }
+      });
     }
   });
 });
